@@ -218,7 +218,7 @@ public class MetadataBackendKV extends AbstractElasticsearchMetadataBackend
                     AttributeValue.doubleAttributeValue(series.getResource().size())
                 );
             }
-            
+
             final String id = series.hash();
             rootSpan.putAttribute("id", AttributeValue.stringAttributeValue(id));
 
@@ -586,14 +586,18 @@ public class MetadataBackendKV extends AbstractElasticsearchMetadataBackend
         return Pair.of(tk, tv);
     }
 
-    private static void buildContext(final XContentBuilder b, Series series, boolean indexResourceIdentifiers) throws IOException {
+    private static void buildContext(
+        final XContentBuilder b,
+        Series series,
+        boolean indexResourceIdentifiers
+    ) throws IOException {
         b.field(KEY, series.getKey());
 
         b.startArray(TAGS);
         for (final Map.Entry<String, String> entry : series.getTags().entrySet()) {
             b.value(entry.getKey() + TAG_DELIMITER + entry.getValue());
         }
-        if(indexResourceIdentifiers) {
+        if (indexResourceIdentifiers) {
             for (final Map.Entry<String, String> entry : series.getResource().entrySet()) {
                 b.value(entry.getKey() + TAG_DELIMITER + entry.getValue());
             }
@@ -604,9 +608,9 @@ public class MetadataBackendKV extends AbstractElasticsearchMetadataBackend
         for (final Map.Entry<String, String> entry : series.getTags().entrySet()) {
             b.value(entry.getKey());
         }
-        if(indexResourceIdentifiers) {
+        if (indexResourceIdentifiers) {
             for (final Map.Entry<String, String> entry : series.getResource().entrySet()) {
-                b.value(entry.getKey() + TAG_DELIMITER + entry.getValue());
+                b.value(entry.getKey());
             }
         }
         b.endArray();
